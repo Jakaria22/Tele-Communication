@@ -1,10 +1,29 @@
-%Calculate Number of Mobile Subscribers Supported
+clc;
+clear all;
 
-% Inputs
-total_traffic = 100; % in Erlangs
-traffic_per_user = 0.05; % Erlangs per user
+N=input('Enter number of channerls: ');
+H=input('Enter average holding time(H) in seconds');
+B=input('Enter blocking probabilty: ');
 
-% Number of Subscribers
-num_subscribers = total_traffic / traffic_per_user;
-fprintf('Number of Subscribers Supported: %.0f\n', num_subscribers);
 
+% function for erlang b
+
+erlang= @(A,N) (A^N/factorial(N)) / sum(A.^[0:N] ./factorial(0:N));
+
+low=0
+high=2*N;
+tol=1e-6;
+
+
+while high-low>tol
+  mid_A= (high+low)/2;
+  if erlang(mid_A,N) > B
+    high=mid_A;
+  else
+    low=mid_A
+  end
+end
+
+%result
+A= (high+low)/2;
+fprintf('Offered Load (A): %.4f Erlangs\n', A);
